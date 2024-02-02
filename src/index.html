@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <link rel="stylesheet" href="./css/styles.css">
+  <script src="https://unpkg.com/@phosphor-icons/web"></script>
+
+</head>
+
+<body>
+  <button id="add-toast">Add Toast</button>
+  <div class="wrapper-toasts">
+  </div>
+
+  <script>
+    // sets default structure
+    const body = document.querySelector("body");
+    const add = document.querySelector("#add-toast");
+    const wrapperToast = document.querySelector(".wrapper-toasts");
+    let contador = 0;
+    // adding event to set Fire();
+    add.addEventListener("click", function (e) {
+      e.preventDefault();
+      Toast.Fire(contador++);
+    })
+
+    /**
+    * @argument array {HTMLElement[]}
+    */
+    const setBouncing = (array) => {
+      const elementHeight = 64;
+      array.forEach((element, index) => {
+        const decremento = 0.02;
+        const opacidade = 1 - index * decremento;
+        const translateY = elementHeight * 30 / 100 * index + 1;
+        const scale = opacidade * 100;
+
+        element.style.transform = `scale(${opacidade}) translateY(-${translateY}px)`;
+        element.style.opacity = opacidade;
+        element.style.zIndex = `-${index + 1}`
+
+      });
+    }
+
+    function Fire(contador) {
+      createToastElement(contador);
+    }
+
+    const Toast = {
+      Fire,
+      toasts: [],
+    }
+
+    function createToastElement(contador) {
+
+      const toast = document.createElement("div");
+
+      body.style.overflow = "hidden";
+
+      toast.innerHTML = `
+        <div class="content">
+          <i class="ph-bold ph-check"></i>
+          <span>${contador}</span>
+        </div>
+        <button>Try Again</button>
+      `;
+
+      toast.classList.add("toast");
+
+      update(toast)
+    }
+
+    function update(toast) {
+      const { toasts } = Toast;
+
+      const haveMoreThanFive = toasts.length >= 5;
+
+
+      if (haveMoreThanFive) {
+        const last = toasts.shift();
+        last.classList.add("dispatch");
+        setTimeout(() => {
+          last.remove()
+        }, 2000);
+      }
+
+      toasts.push(toast);
+
+      const reverseToasts = toasts.slice().reverse();
+
+      setTimeout(() => {
+        setBouncing(reverseToasts);
+      }, 100);
+
+      wrapperToast.appendChild(toast);
+
+
+
+
+      // const { toasts } = Toast;
+
+      // const haveMoreThanFive = Toast.toasts.length >= 5;
+
+      // arrayReverse = toasts.slice().reverse();
+      // 
+      // console.log(arrayReverse);
+
+
+
+      // if (haveMoreThanFive) {
+
+
+
+      //   const element = arrayReverse.pop();
+      //   console.log(element)
+      //   element.remove();
+      //   setTimeout(() => {
+      //     element.classList.add("dispatch");
+      //   }, 2000);
+
+
+      // }
+
+      // console.log(haveMoreThanFive)
+
+
+      // Toast.toasts.push(toast);
+
+      // setTimeout(() => {
+      //   setBouncing(arrayReverse);
+      // }, 100)
+
+      // wrapperToast.appendChild(toast);
+    }
+
+    function draw(toast) {
+      return new Promise((resolve) => {
+
+        resolve();
+      });
+    }
+
+
+
+  </script>
+</body>
+
+</html>
